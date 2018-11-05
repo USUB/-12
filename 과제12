@@ -1,0 +1,41 @@
+import requests
+r = requests.get('https://www.vox.com/2018/9/25/17901082/trump-un-2018-speech-full-text')
+r.encoding = 'utf8'
+data = str(r.text)
+start = data.find('President Donald Trump')
+end = data.rfind('Thank you very much. Thank you. (Applause.)')
+end = end + 43
+
+Trump = data[start:end]
+Trump = Trump.replace('\n','')
+Trump = Trump.replace('"','')
+Trump = Trump.replace("'",'')
+Trump = Trump.replace('’',' ')
+Trump = Trump.replace(',',' ')
+Trump = Trump.replace('.</p><p','')
+Trump = Trump.lower()
+words = Trump.split()
+L = ['0','1','their','will','are','has','at','17','un','i','its','by','be','they','have','as','with','not','it','us','on','the','and','to','of','we','in','a','our','is','for','that','s','this']
+
+
+
+mydict = {}
+for w in words:
+    if w in mydict:
+        mydict[w] += 1
+    else:
+        mydict[w] = 1
+
+
+count = 0
+for k in sorted(mydict, key=mydict.__getitem__, reverse=True):
+    if '<' in k:
+        del mydict[k]
+    elif '=' in k:
+        del mydict[k]
+    elif '>' in k:
+        del mydict[k]
+    elif k not in L:
+        print('%s,%s번 나왔습니다.'%(k,mydict[k]))
+        count += 1
+        if count == 20: break
